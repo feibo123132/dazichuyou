@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活动详情 - 如约而至</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --primary: 222.2 47.4% 11.2%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96%;
+            --muted: 210 40% 96%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --destructive: 0 84.2% 60.2%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 222.2 84% 4.9%;
+            --radius: 0.5rem;
+            --chart-1: 12 76% 61%;
+            --chart-2: 173 58% 39%;
+            --chart-3: 197 37% 24%;
+            --chart-4: 43 74% 66%;
+            --chart-5: 27 87% 67%;
+        }
+
+        .dark {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --primary: 210 40% 98%;
+            --secondary: 217.2 32.6% 17.5%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --destructive: 0 62.8% 30.6%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 212.7 26.8% 83.9%;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'PingFang SC', 'Source Han Sans', 'system-ui', sans-serif;
+            border-color: hsl(var(--border));
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid hsl(var(--border));
+            height: 64px;
+            display: flex;
+            align-items: center;
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: color 0.3s;
+            letter-spacing: 1px;
+        }
+        
+        .logo:hover {
+            color: #FFD700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            color: #4a5568;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border-radius: 50%;
+        }
+        
+        /* 活动详情页样式 */
+        .activity-detail {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+        
+        .activity-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .activity-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+        
+        .meta-item i {
+            color: #FFD700;
+        }
+        
+        .activity-banner {
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 50px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .activity-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        
+        .activity-banner:hover img {
+            transform: scale(1.05);
+        }
+        
+        .story-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #FFD700;
+            display: inline-block;
+        }
+        
+        .story-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .story-content p {
+            margin-bottom: 20px;
+        }
+        
+        .gallery-section {
+            margin-bottom: 50px;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .photo-item {
+            border-radius: 15px;
+            overflow: hidden;
+            height: 300px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .photo-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .comments-section {
+            background: linear-gradient(135deg, #fff9f9 0%, #fff0f5 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .comment-form {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 30px;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: #FFD700;
+            color: #2c3e50;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ffcc00;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.4);
+        }
+        
+        .comments-list {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .comment-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .comment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .comment-author {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .comment-date {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .comment-content {
+            font-size: 1.05rem;
+            color: #4a5568;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .comment-like {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-like:hover {
+            color: #f56565;
+        }
+        
+        .comment-like.active {
+            color: #f56565;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            color: #FFD700;
+            transform: translateX(-5px);
+        }
+        
+        /* 页脚样式 */
+        .footer {
+            background: linear-gradient(to right, #2c3e50, #1a2530);
+            color: white;
+            padding: 4rem 0 3rem;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #FFD700, #FF69B4, #20B2AA);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #FFD700;
+            letter-spacing: 1px;
+        }
+        
+        .footer-description {
+            font-size: 1.1rem;
+            color: #cbd5e0;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            max-width: 600px;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1.75rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 1.4rem;
+            text-decoration: none;
+        }
+        
+        .social-link:hover {
+            background: #FFD700;
+            color: #2c3e50;
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .copyright {
+            color: #a0aec0;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .activity-title {
+                font-size: 2.5rem;
+            }
+            
+            .activity-banner {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .activity-title {
+                font-size: 2rem;
+            }
+            
+            .activity-banner {
+                height: 300px;
+            }
+            
+            .story-section,
+            .comments-section {
+                padding: 30px;
+            }
+            
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .photo-item {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .activity-title {
+                font-size: 1.8rem;
+            }
+            
+            .activity-meta {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .activity-banner {
+                height: 250px;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .photo-item {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">如约而至</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>首页</span>
+                </a>
+                <a href="index.html#activities" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>活动集锦</span>
+                </a>
+                <a href="index.html#crew" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>人物志</span>
+                </a>
+                <a href="index.html#comments" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>留言板</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 活动详情内容 -->
+    <div class="activity-detail">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> 返回活动列表
+        </a>
+        
+        <div class="activity-header">
+            <h1 class="activity-title">龙肖初见</h1>
+            
+            <div class="activity-meta">
+                <div class="meta-item">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>2024年3月15日</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>龙肖山公园</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-users"></i>
+                    <span>8人参与</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="activity-banner">
+            <img src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="龙肖初见活动主图">
+        </div>
+        
+        <div class="story-section">
+            <h2 class="section-title">故事回顾</h2>
+            <div class="story-content">
+                <p>那是一个春日的清晨，微风轻拂，阳光透过云层洒在龙肖山公园的青石板路上。我们八位素未谋面的年轻人，因为同一个兴趣小组的线上约定，在此相聚。初次见面，大家略显拘谨，但眼中都闪烁着期待的光芒。</p>
+                <p>活动组织者小李率先打破了沉默："大家好，我是小李，很高兴见到大家！"简单的自我介绍后，气氛渐渐活跃起来。我们沿着山间小路漫步，两旁樱花盛开，粉白的花瓣随风飘落，仿佛置身于童话世界。</p>
+                <p>在山顶的观景台，小红拿出精心准备的野餐点心，大家围坐在一起分享美食和故事。摄影师小明则不停地捕捉着大家的笑脸和美丽的风景。不知不觉中，初识的陌生感消失殆尽，取而代之的是欢声笑语和真挚的交流。</p>
+                <p>傍晚时分，夕阳的余晖染红了天际，我们在公园门口合影留念，约定下次再聚。这次"龙肖初见"不仅是一次简单的聚会，更是我们友谊的开始，成为每个人心中珍贵的春日记忆。</p>
+            </div>
+        </div>
+        
+        <div class="gallery-section">
+            <h2 class="section-title">精彩瞬间</h2>
+            <div class="photo-grid">
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="樱花树下的合影">
+                </div>
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="山顶野餐">
+                </div>
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="山间小路漫步">
+                </div>
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1567942712661-82b9b407abbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="日落合影">
+                </div>
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1485178575877-1a13bf489dfe?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="野餐美食">
+                </div>
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="交流瞬间">
+                </div>
+            </div>
+        </div>
+        
+        <div class="comments-section">
+            <h2 class="section-title">朋友留言板</h2>
+            
+            <div class="comment-form">
+                <h3 class="form-title">留下你的回忆</h3>
+                <form id="comment-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="你的昵称" id="comment-author" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="分享你的感受和回忆..." id="comment-content" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">发表留言</button>
+                </form>
+            </div>
+            
+            <div class="comments-list" id="comments-list">
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <div class="comment-author">小明</div>
+                        <div class="comment-date">2024年3月16日</div>
+                    </div>
+                    <div class="comment-content">
+                        那天真的太开心了！第一次见面就感觉像老朋友一样，期待下次聚会！
+                    </div>
+                    <div class="comment-actions">
+                        <div class="comment-like">
+                            <i class="fas fa-heart"></i>
+                            <span>8</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <div class="comment-author">小红</div>
+                        <div class="comment-date">2024年3月17日</div>
+                    </div>
+                    <div class="comment-content">
+                        樱花真的太美了，和大家一起度过的时光总是那么美好～下次我还要准备更多点心！
+                    </div>
+                    <div class="comment-actions">
+                        <div class="comment-like">
+                            <i class="fas fa-heart"></i>
+                            <span>12</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <div class="comment-author">小李</div>
+                        <div class="comment-date">2024年3月18日</div>
+                    </div>
+                    <div class="comment-content">
+                        感谢大家的参与！看到大家从陌生到熟悉的过程真的很感动，期待我们的下一次旅程！
+                    </div>
+                    <div class="comment-actions">
+                        <div class="comment-like">
+                            <i class="fas fa-heart"></i>
+                            <span>6</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">如约而至</div>
+            <p class="footer-description">
+                捕捉瞬间，珍藏友谊。记录我们一起走过的美好时光。
+                这里是我们的青春纪念册，保存着最珍贵的回忆和最真挚的情谊。
+            </p>
+            <div class="footer-social">
+                <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-qq"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-weibo"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="copyright">© 2024 如约而至 - 我们的青春纪念册. 保留所有权利</p>
+        </div>
+    </footer>
+    
+    <script>
+        // 留言功能实现
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentForm = document.getElementById('comment-form');
+            const commentsList = document.getElementById('comments-list');
+            
+            // 表单提交事件
+            commentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const authorInput = document.getElementById('comment-author');
+                const contentInput = document.getElementById('comment-content');
+                const author = authorInput.value.trim();
+                const content = contentInput.value.trim();
+                
+                if (author && content) {
+                    // 创建新留言
+                    const newComment = document.createElement('div');
+                    newComment.className = 'comment-card';
+                    newComment.innerHTML = `
+                        <div class="comment-header">
+                            <div class="comment-author">${author}</div>
+                            <div class="comment-date">${new Date().toLocaleDateString('zh-CN')}</div>
+                        </div>
+                        <div class="comment-content">
+                            ${content}
+                        </div>
+                        <div class="comment-actions">
+                            <div class="comment-like">
+                                <i class="fas fa-heart"></i>
+                                <span>0</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 添加到列表顶部
+                    commentsList.insertBefore(newComment, commentsList.firstChild);
+                    
+                    // 添加点赞功能
+                    const likeBtn = newComment.querySelector('.comment-like');
+                    likeBtn.addEventListener('click', function() {
+                        const likeCount = this.querySelector('span');
+                        let count = parseInt(likeCount.textContent);
+                        count++;
+                        likeCount.textContent = count;
+                        
+                        // 添加动画效果
+                        this.classList.toggle('active');
+                    });
+                    
+                    // 重置表单
+                    commentForm.reset();
+                }
+            });
+            
+            // 初始化点赞功能
+            document.querySelectorAll('.comment-like').forEach(likeBtn => {
+                likeBtn.addEventListener('click', function() {
+                    const likeCount = this.querySelector('span');
+                    let count = parseInt(likeCount.textContent);
+                    count++;
+                    likeCount.textContent = count;
+                    
+                    // 添加动画效果
+                    this.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
