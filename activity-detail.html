@@ -788,5 +788,87 @@
             });
         });
     </script>
+
+    <script>
+    // 获取URL参数
+    function getActivityId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id') || "1"; // 默认显示第一个活动
+    }
+
+    // 活动数据
+    const activities = {
+        "1": {
+            title: "小撮一顿",
+            date: "2025年5月25日",
+            location: "疍家味",
+            participants: "8人参与",
+            bannerImage: "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145433.jpg?raw=true",
+            story: `<p>故事王浩哥声情并茂演绎舍友离谱操作    桂大厨桂哥在线品鉴美食Carry全场</p>`,
+            galleryImages: [
+                "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                // 添加更多图片...
+            ]
+        },
+        "2": {
+            title: "五一园博",
+            date: "2025年5月2日",
+            location: "园博园",
+            participants: "4人参与",
+            bannerImage: "https://github.com/feibo123132/dazichuyou/blob/1e7ebcf84b8840f0b3c1152e9a6121a7974f6e2a/0502%20%E5%9B%AD%E5%8D%9A%E5%9B%AD/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530144323.jpg?raw=true",
+            story: `<p>茉莉香飘 水豚犯懒的季节 我们在花海中留下了搞怪的回忆</p>`,
+            galleryImages: [
+                // 添加图片...
+            ]
+        },
+        "3": {
+            title: "龙肖初见",
+            date: "2025年3月22日",
+            location: "清秀山公园",
+            participants: "7人参与",
+            bannerImage: "https://github.com/feibo123132/dazichuyou/blob/main/0322%20%E9%9D%92%E7%A7%80%E5%B1%B1/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530143345.jpg?raw=true",
+            story: `<p>相逢莫道初相识 笑语春风满画屏</p>`,
+            galleryImages: [
+                // 添加图片...
+            ]
+        }
+    };
+
+    // 页面加载时更新内容
+    document.addEventListener('DOMContentLoaded', function() {
+        const activityId = getActivityId();
+        const activity = activities[activityId];
+        
+        if (activity) {
+            // 更新标题
+            document.querySelector('.activity-title').textContent = activity.title;
+            
+            // 更新元数据
+            document.querySelectorAll('.meta-item')[0].querySelector('span').textContent = activity.date;
+            document.querySelectorAll('.meta-item')[1].querySelector('span').textContent = activity.location;
+            document.querySelectorAll('.meta-item')[2].querySelector('span').textContent = activity.participants;
+            
+            // 更新横幅图片
+            const bannerImg = document.querySelector('.activity-banner img');
+            bannerImg.src = activity.bannerImage;
+            bannerImg.alt = activity.title + "活动主图";
+            
+            // 更新故事内容
+            document.querySelector('.story-content').innerHTML = activity.story;
+            
+            // 更新相册
+            const gallery = document.querySelector('.photo-grid');
+            gallery.innerHTML = '';
+            activity.galleryImages.forEach(imgSrc => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `<img src="${imgSrc}" alt="${activity.title}活动照片">`;
+                gallery.appendChild(photoItem);
+            });
+        }
+    });
+</script>
+
 </body>
 </html>
