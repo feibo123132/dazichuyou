@@ -2032,5 +2032,221 @@
 
 </script>
 
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";    
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcoiXwnT6CD-Zk0nvnbDfM7B0Fko5a0XE",
+    authDomain: "wangye-dazi9527.firebaseapp.com",
+    projectId: "wangye-dazi9527",
+    storageBucket: "wangye-dazi9527.firebasestorage.app",
+    messagingSenderId: "837427688043",
+    appId: "1:837427688043:web:cb8bfd1a827cd30ae3372e",
+    measurementId: "G-GDYHZQY4MJ"
+  };
+
+  // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // App ID for Firestore paths
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+    // Firestore collection reference for main comments
+    const mainCommentsCollection = collection(db, `artifacts/${appId}/public/data/main-comments`);
+
+    // DOM Elements for index.html comments section
+    const commentForm = document.getElementById('comment-form'); // Assuming this ID exists in your index.html
+    const commentsList = document.querySelector('#comments .comments-list'); // Scoped to #comments section
+
+    let currentUserId = null;
+
+    // Authenticate user (anonymously for this example)
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/firebase.User
+            currentUserId = user.uid;
+            console.log("User signed in anonymously:", currentUserId);
+            loadComments(); // Load comments after user is authenticated
+        } else {
+            // User is signed out
+            console.log("User is signed out. Attempting to sign in anonymously...");
+            signInAnonymously(auth).catch((error) => {
+                console.error("Anonymous sign-in error:", error);
+            });
+        }
+    });
+    
+    // Function to handle custom modal alerts
+    function showModalAlert(message) {
+        // This is a placeholder. Implement a proper modal UI in your actual application.
+        // Avoid using window.alert()
+        console.warn("Modal Alert:", message);
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.left = '50%';
+        modal.style.top = '20px';
+        modal.style.transform = 'translateX(-50%)';
+        modal.style.padding = '10px 20px';
+        modal.style.backgroundColor = '#333';
+        modal.style.color = 'white';
+        modal.style.borderRadius = '5px';
+        modal.style.zIndex = '10000';
+        modal.textContent = message;
+        document.body.appendChild(modal);
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 3000);
+    }
+
+
+    // Load comments from Firestore
+    function loadComments() {
+        if (!commentsList) {
+            console.error("Comments list element not found in index.html.");
+            return;
+        }
+        if (!currentUserId) {
+            console.warn("User not authenticated yet, comments will not load.");
+            return;
+        }
+
+        const q = query(mainCommentsCollection, orderBy("timestamp", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            commentsList.innerHTML = ''; // Clear existing comments
+            snapshot.forEach((doc) => {
+                const comment = doc.data();
+                renderComment(doc.id, comment);
+            });
+        }, (error) => {
+            console.error("Error loading comments: ", error);
+            showModalAlert("加载留言失败，请稍后重试。");
+        });
+    }
+
+    // Render a single comment to the DOM
+    function renderComment(commentId, comment) {
+        if (!commentsList) return;
+
+        const commentCard = document.createElement('div');
+        commentCard.className = 'comment-card'; // Use existing class from index.html
+        commentCard.dataset.id = commentId; // Store Firestore document ID
+
+        const innerDiv = document.createElement('div');
+        // Use the class structure from your existing HTML for consistency
+        innerDiv.className = 'p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow'; 
+                                   
+        const authorName = comment.author || "匿名用户";
+        const contentText = comment.content || "";
+        const timestamp = comment.timestamp?.toDate ? comment.timestamp.toDate().toLocaleDateString('zh-CN') : new Date().toLocaleDateString('zh-CN');
+        const likes = comment.likes || 0;
+
+        innerDiv.innerHTML = `
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-800">${authorName}</h3>
+                    <p class="text-gray-500 text-sm">${timestamp}</p>
+                </div>
+                <div class="comment-likes flex items-center gap-1 text-pink-500 cursor-pointer" data-comment-id="${commentId}">
+                    <i class="fas fa-heart"></i>
+                    <span class="text-sm">${likes}</span>
+                </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+                ${contentText.replace(/\n/g, '<br>')}
+            </p>
+        `;
+        commentCard.appendChild(innerDiv);
+        commentsList.appendChild(commentCard);
+
+        // Add event listener for the like button on the newly rendered comment
+        const likeBtn = commentCard.querySelector('.comment-likes');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', () => handleLike(commentId));
+        }
+    }
+
+    // Handle comment submission
+    if (commentForm) {
+        commentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!currentUserId) {
+                showModalAlert("请先登录才能发表留言。");
+                return;
+            }
+
+            const authorInput = document.getElementById('comment-author');
+            const contentInput = document.getElementById('comment-content');
+
+            if (!authorInput || !contentInput) {
+                console.error("Author or content input not found in index.html form.");
+                return;
+            }
+
+            const author = authorInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (author && content) {
+                try {
+                    await addDoc(mainCommentsCollection, {
+                        author: author,
+                        content: content,
+                        likes: 0,
+                        timestamp: serverTimestamp(), // Use server timestamp
+                        userId: currentUserId // Store the user ID who posted
+                    });
+                    commentForm.reset();
+                    // The onSnapshot listener will automatically render the new comment
+                } catch (error) {
+                    console.error("Error adding comment: ", error);
+                    showModalAlert("发表留言失败，请稍后重试。");
+                }
+            } else {
+                showModalAlert("昵称和内容不能为空！");
+            }
+        });
+    } else {
+        console.warn("Comment form with ID 'comment-form' not found in index.html.");
+    }
+
+    // Handle like button click
+    async function handleLike(commentId) {
+        if (!currentUserId) {
+            showModalAlert("请先登录才能点赞。");
+            return;
+        }
+        if (!commentId) return;
+
+        const commentRef = doc(db, `artifacts/${appId}/public/data/main-comments`, commentId);
+        try {
+            await updateDoc(commentRef, {
+                likes: increment(1) // Atomically increment likes
+            });
+            // Firestore onSnapshot will update the UI.
+        } catch (error) {
+            console.error("Error liking comment: ", error);
+            showModalAlert("点赞失败，请稍后重试。");
+        }
+    }
+    
+    // Initial call to attempt sign-in if no user is immediately available
+    if (!auth.currentUser) {
+        signInAnonymously(auth).catch((error) => {
+            console.error("Initial anonymous sign-in attempt failed:", error);
+        });
+    }
+</script>
+
 </body>
 </html>

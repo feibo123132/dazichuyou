@@ -870,5 +870,230 @@
     });
 </script>
 
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBcoiXwnT6CD-Zk0nvnbDfM7B0Fko5a0XE",
+    authDomain: "wangye-dazi9527.firebaseapp.com",
+    projectId: "wangye-dazi9527",
+    storageBucket: "wangye-dazi9527.firebasestorage.app",
+    messagingSenderId: "837427688043",
+    appId: "1:837427688043:web:cb8bfd1a827cd30ae3372e",
+    measurementId: "G-GDYHZQY4MJ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  // App ID for Firestore paths
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    
+    // DOM Elements for activity-detail.html comments section
+    const commentFormDetail = document.getElementById('comment-form'); // Assuming this ID is for the form in activity-detail.html
+    const commentsListDetail = document.getElementById('comments-list'); // Assuming this ID is for the list in activity-detail.html
+
+    let currentUserId = null;
+    let currentActivityId = null;
+    let activityCommentsCollectionRef = null;
+
+    // Function to handle custom modal alerts
+    function showModalAlert(message) {
+        // This is a placeholder. Implement a proper modal UI in your actual application.
+        console.warn("Modal Alert:", message);
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.left = '50%';
+        modal.style.top = '20px';
+        modal.style.transform = 'translateX(-50%)';
+        modal.style.padding = '10px 20px';
+        modal.style.backgroundColor = '#333';
+        modal.style.color = 'white';
+        modal.style.borderRadius = '5px';
+        modal.style.zIndex = '10000';
+        modal.textContent = message;
+        document.body.appendChild(modal);
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 3000);
+    }
+
+    // Get activity ID from URL
+    function getActivityIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
+
+    // Authenticate user
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserId = user.uid;
+            console.log("User signed in anonymously (activity detail):", currentUserId);
+            currentActivityId = getActivityIdFromURL();
+            if (currentActivityId) {
+                activityCommentsCollectionRef = collection(db, `artifacts/${appId}/public/data/activity-comments/${currentActivityId}/comments`);
+                loadActivityComments();
+            } else {
+                console.error("Activity ID not found in URL.");
+                showModalAlert("无法加载此活动的留言，活动ID缺失。");
+            }
+        } else {
+            console.log("User is signed out (activity detail). Attempting to sign in anonymously...");
+            signInAnonymously(auth).catch((error) => {
+                console.error("Anonymous sign-in error (activity detail):", error);
+            });
+        }
+    });
+
+
+    // Load comments for the specific activity
+    function loadActivityComments() {
+        if (!commentsListDetail) {
+            console.error("Comments list element 'comments-list' not found in activity-detail.html.");
+            return;
+        }
+        if (!currentUserId) {
+            console.warn("User not authenticated yet, activity comments will not load.");
+            return;
+        }
+        if (!activityCommentsCollectionRef) {
+            console.error("Activity comments collection reference is not set.");
+            return;
+        }
+
+        const q = query(activityCommentsCollectionRef, orderBy("timestamp", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            commentsListDetail.innerHTML = ''; // Clear existing comments
+            snapshot.forEach((doc) => {
+                const comment = doc.data();
+                renderActivityComment(doc.id, comment);
+            });
+        }, (error) => {
+            console.error("Error loading activity comments: ", error);
+            showModalAlert("加载活动留言失败，请稍后重试。");
+        });
+    }
+
+    // Render a single activity comment
+    function renderActivityComment(commentId, comment) {
+        if (!commentsListDetail) return;
+
+        const commentCard = document.createElement('div');
+        commentCard.className = 'comment-card'; // Use existing class from activity-detail.html
+        commentCard.dataset.id = commentId;
+
+        // Use the existing HTML structure for comment cards in activity-detail.html
+        const authorName = comment.author || "匿名用户";
+        const contentText = comment.content || "";
+        const timestamp = comment.timestamp?.toDate ? comment.timestamp.toDate().toLocaleDateString('zh-CN') : new Date().toLocaleDateString('zh-CN');
+        const likes = comment.likes || 0;
+
+        commentCard.innerHTML = `
+            <div class="comment-header">
+                <div class="comment-author">${authorName}</div>
+                <div class="comment-date">${timestamp}</div>
+            </div>
+            <div class="comment-content">
+                ${contentText.replace(/\n/g, '<br>')}
+            </div>
+            <div class="comment-actions">
+                <div class="comment-like" data-comment-id="${commentId}">
+                    <i class="fas fa-heart"></i>
+                    <span>${likes}</span>
+                </div>
+            </div>
+        `;
+        commentsListDetail.appendChild(commentCard);
+
+        const likeBtn = commentCard.querySelector('.comment-like');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', () => handleActivityLike(commentId));
+        }
+    }
+
+    // Handle activity comment submission
+    if (commentFormDetail) {
+        commentFormDetail.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!currentUserId) {
+                showModalAlert("请先登录才能发表留言。");
+                return;
+            }
+            if (!activityCommentsCollectionRef) {
+                showModalAlert("无法发表留言，活动信息不明确。");
+                return;
+            }
+
+            const authorInput = document.getElementById('comment-author'); // Assuming same ID as index.html
+            const contentInput = document.getElementById('comment-content'); // Assuming same ID as index.html
+            
+            if (!authorInput || !contentInput) {
+                console.error("Author or content input not found in activity-detail.html form.");
+                return;
+            }
+
+            const author = authorInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (author && content) {
+                try {
+                    await addDoc(activityCommentsCollectionRef, {
+                        author: author,
+                        content: content,
+                        likes: 0,
+                        timestamp: serverTimestamp(),
+                        userId: currentUserId
+                    });
+                    commentFormDetail.reset();
+                } catch (error) {
+                    console.error("Error adding activity comment: ", error);
+                    showModalAlert("发表活动留言失败，请稍后重试。");
+                }
+            } else {
+                showModalAlert("昵称和内容不能为空！");
+            }
+        });
+    } else {
+        console.warn("Comment form with ID 'comment-form' not found in activity-detail.html.");
+    }
+
+    // Handle activity like button click
+    async function handleActivityLike(commentId) {
+        if (!currentUserId) {
+            showModalAlert("请先登录才能点赞。");
+            return;
+        }
+        if (!commentId || !currentActivityId) return;
+
+        const commentRef = doc(db, `artifacts/${appId}/public/data/activity-comments/${currentActivityId}/comments`, commentId);
+        try {
+            await updateDoc(commentRef, {
+                likes: increment(1)
+            });
+        } catch (error) {
+            console.error("Error liking activity comment: ", error);
+            showModalAlert("点赞失败，请稍后重试。");
+        }
+    }
+    
+    // Initial call to attempt sign-in if no user is immediately available
+    if (!auth.currentUser) {
+        signInAnonymously(auth).catch((error) => {
+            console.error("Initial anonymous sign-in attempt failed (activity detail):", error);
+        });
+    }
+
+
+</script>
+
 </body>
 </html>
