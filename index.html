@@ -1652,105 +1652,6 @@
     }
 </style>
 
-<script>
-    // 留言板交互脚本
-    document.addEventListener('DOMContentLoaded', function() {
-        const commentForm = document.getElementById('comment-form');
-        const commentsList = document.querySelector('#comments .comments-list'); //Scoped
-        
-        if(commentForm && commentsList){ // Check if elements exist
-            commentForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const authorInput = document.getElementById('comment-author');
-                const contentInput = document.getElementById('comment-content');
-                
-                if(!authorInput || !contentInput) return; // Guard clause
-
-                const author = authorInput.value.trim();
-                const content = contentInput.value.trim();
-                
-                if (author && content) {
-                    // 创建新留言
-                    const newCommentCard = document.createElement('div');
-                    newCommentCard.className = 'comment-card';
-                    
-                    const innerDiv = document.createElement('div');
-                    innerDiv.className = 'p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow'; // Match existing style
-                    
-                    innerDiv.innerHTML = `
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl font-semibold text-slate-800">${author}</h3>
-                                <p class="text-gray-500 text-sm">${new Date().toLocaleDateString('zh-CN')}</p>
-                            </div>
-                            <div class="comment-likes flex items-center gap-1 text-pink-500 cursor-pointer">
-                                <i class="fas fa-heart"></i>
-                                <span class="text-sm">0</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 leading-relaxed">
-                            ${content.replace(/\n/g, '<br>')}
-                        </p>
-                    `;
-                    newCommentCard.appendChild(innerDiv);
-                    
-                    // 添加到列表顶部
-                    commentsList.insertBefore(newCommentCard, commentsList.firstChild);
-                    
-                    // 添加动画 (using the global animation approach is better, but this is a quick add)
-                    newCommentCard.style.opacity = '0';
-                    newCommentCard.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        newCommentCard.style.opacity = '1';
-                        newCommentCard.style.transform = 'translateY(0)';
-                        newCommentCard.style.transition = 'all 0.5s ease';
-                    }, 10);
-                    
-                    // 添加点赞功能 to new comment
-                    const likeBtn = newCommentCard.querySelector('.comment-likes');
-                    if(likeBtn){
-                        likeBtn.addEventListener('click', function() {
-                            const likeCountSpan = this.querySelector('span');
-                            if(likeCountSpan){
-                                let count = parseInt(likeCountSpan.textContent);
-                                count++;
-                                likeCountSpan.textContent = count;
-                                this.style.color = '#ec4899'; // Pinker on click
-                                // setTimeout(() => { this.style.color = ''; }, 300); // Optional: revert color
-                            }
-                        });
-                    }
-                    
-                    // 添加悬停效果 to new comment (CSS handles this now)
-                    // newCommentCard.addEventListener('mouseenter', function() { ... });
-                    // newCommentCard.addEventListener('mouseleave', function() { ... });
-                    
-                    // 重置表单
-                    commentForm.reset();
-                }
-            });
-        }
-        
-        // 初始化现有留言的点赞功能
-        document.querySelectorAll('#comments .comment-likes').forEach(likeBtn => { //Scoped
-            likeBtn.addEventListener('click', function() {
-                const likeCountSpan = this.querySelector('span');
-                if(likeCountSpan){
-                    let count = parseInt(likeCountSpan.textContent);
-                    count++; // Or toggle like/unlike
-                    likeCountSpan.textContent = count;
-                    this.style.color = '#ec4899';
-                    // setTimeout(() => { this.style.color = ''; }, 300);
-                }
-            });
-        });
-        
-        // 初始化卡片悬停效果 (CSS handles this now)
-        // document.querySelectorAll('#comments .comment-card').forEach(card => { ... });
-    });
-</script>
-
 
 <footer class="footer">
     <div class="container">
@@ -2059,7 +1960,7 @@
     const auth = getAuth(app);
 
     // App ID for Firestore paths
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const appId = 'wangye-dazi9527';
 
     // Firestore collection reference for main comments
     const mainCommentsCollection = collection(db, `artifacts/${appId}/public/data/main-comments`);
