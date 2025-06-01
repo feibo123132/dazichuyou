@@ -793,37 +793,103 @@
 
     // 页面加载时更新内容
     document.addEventListener('DOMContentLoaded', function() {
-        const activityId = getActivityId();
-        const activity = activities[activityId];
-        
-        if (activity) {
-            // 更新标题
-            document.querySelector('.activity-title').textContent = activity.title;
-            
-            // 更新元数据
-            document.querySelectorAll('.meta-item')[0].querySelector('span').textContent = activity.date;
-            document.querySelectorAll('.meta-item')[1].querySelector('span').textContent = activity.location;
-            document.querySelectorAll('.meta-item')[2].querySelector('span').textContent = activity.participants;
-            
-            // 更新横幅图片
-            const bannerImg = document.querySelector('.activity-banner img');
+    console.log("DOM fully loaded and parsed."); // 日志1：确认脚本开始执行
+
+    const activityId = getActivityId();
+    console.log("Retrieved activity ID:", activityId); // 日志2：查看获取到的 activityId
+
+    if (!activityId) {
+        console.error("Activity ID is null or undefined. Cannot load activity.");
+        // 可以选择在这里显示一个错误消息给用户
+        // document.body.innerHTML = "<p>错误：无法加载活动，活动ID缺失。</p>";
+        return;
+    }
+
+    const activity = activities[activityId];
+    console.log("Activity data for ID '" + activityId + "':", activity); // 日志3：查看找到的活动数据
+
+    if (activity) {
+        console.log("Attempting to update page content for:", activity.title); // 日志4
+
+        // 更新标题
+        const titleElement = document.querySelector('.activity-title');
+        if (titleElement) {
+            titleElement.textContent = activity.title;
+            console.log("Title updated to:", activity.title);
+        } else {
+            console.error("Element with class .activity-title not found!");
+        }
+
+        // 更新元数据
+        const metaItems = document.querySelectorAll('.meta-item');
+        if (metaItems && metaItems.length >= 3) {
+            if (metaItems[0] && metaItems[0].querySelector('span')) {
+                metaItems[0].querySelector('span').textContent = activity.date;
+                console.log("Date updated to:", activity.date);
+            } else {
+                console.error("Date meta item or its span not found.");
+            }
+            if (metaItems[1] && metaItems[1].querySelector('span')) {
+                metaItems[1].querySelector('span').textContent = activity.location;
+                console.log("Location updated to:", activity.location);
+            } else {
+                console.error("Location meta item or its span not found.");
+            }
+            if (metaItems[2] && metaItems[2].querySelector('span')) {
+                metaItems[2].querySelector('span').textContent = activity.participants;
+                console.log("Participants updated to:", activity.participants);
+            } else {
+                console.error("Participants meta item or its span not found.");
+            }
+        } else {
+            console.error("Meta items (.meta-item) not found or less than 3. Found:", metaItems ? metaItems.length : 'null');
+        }
+
+        // 更新横幅图片
+        const bannerImg = document.querySelector('.activity-banner img');
+        if (bannerImg) {
             bannerImg.src = activity.bannerImage;
             bannerImg.alt = activity.title + "活动主图";
-            
-            // 更新故事内容
-            document.querySelector('.story-content').innerHTML = activity.story;
-            
-            // 更新相册
-            const gallery = document.querySelector('.photo-grid');
-            gallery.innerHTML = '';
-            activity.galleryImages.forEach(imgSrc => {
-                const photoItem = document.createElement('div');
-                photoItem.className = 'photo-item';
-                photoItem.innerHTML = `<img src="${imgSrc}" alt="${activity.title}活动照片">`;
-                gallery.appendChild(photoItem);
-            });
+            console.log("Banner image updated. New src:", activity.bannerImage);
+        } else {
+            console.error("Element .activity-banner img not found!");
         }
-    });
+
+        // 更新故事内容
+        const storyContent = document.querySelector('.story-content');
+        if (storyContent) {
+            storyContent.innerHTML = activity.story; // 注意：使用 innerHTML，确保 story 内容中的 HTML 标签被正确渲染
+            console.log("Story content updated.");
+        } else {
+            console.error("Element .story-content not found!");
+        }
+
+        // 更新相册
+        const gallery = document.querySelector('.photo-grid');
+        if (gallery) {
+            gallery.innerHTML = ''; // 清空旧的相册内容
+            if (activity.galleryImages && Array.isArray(activity.galleryImages)) {
+                activity.galleryImages.forEach((imgSrc, index) => {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'photo-item';
+                    photoItem.innerHTML = `<img src="${imgSrc}" alt="${activity.title}活动照片 ${index + 1}">`;
+                    gallery.appendChild(photoItem);
+                });
+                console.log("Gallery updated with", activity.galleryImages.length, "images.");
+            } else {
+                console.warn("No gallery images found for this activity or galleryImages is not an array.");
+            }
+        } else {
+            console.error("Element .photo-grid not found!");
+        }
+        console.log("Page content update attempt finished for:", activity.title); // 日志5
+    } else {
+        console.error("No activity data found for ID:", activityId, ". Displaying static content or error.");
+        // 可以选择在这里显示一个更友好的错误消息给用户，而不是默认的静态页面
+        // document.querySelector('.activity-title').textContent = "活动未找到";
+        // document.querySelector('.story-content').innerHTML = "<p>抱歉，无法加载您所选的活动详情。</p>";
+    }
+});
 </script>
 
 <script type="module">
