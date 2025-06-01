@@ -438,6 +438,17 @@
             margin-bottom: 1.5rem;
             color: #FFD700;
             letter-spacing: 1px;
+             /* 主打渐变色 */
+    background: linear-gradient(135deg, #FF6B6B, #FFD166, #06D6A0); /* 示例：红、黄、薄荷绿的活力渐变 */
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent; /* 兼容 Firefox */
+    /* 可选：添加微妙的白色或浅色阴影增加立体感 */
+    text-shadow: 0px 1px 3px rgba(255, 255, 255, 0.1);
+    /* 可选：如果希望字体更现代活泼，可以考虑特殊的 WebFont，但当前字体栈已包含现代选择 */
+    /* font-family: 'Your Energetic Font', 'Inter', 'PingFang SC', sans-serif; */
         }
         
         .footer-description {
@@ -704,7 +715,7 @@
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-logo">如约而至</div>
+            <div class="footer-logo">乘兴而归</div>
             <p class="footer-description">
                 捕捉瞬间，珍藏友谊。记录我们一起走过的美好时光。
                 这里是我们的青春纪念册，保存着最珍贵的回忆和最真挚的情谊。
@@ -715,7 +726,7 @@
                 <a href="#" class="social-link"><i class="fab fa-weibo"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
             </div>
-            <p class="copyright">© 2024 如约而至 - 我们的青春纪念册. 保留所有权利</p>
+            <p class="copyright">© 2025 如约而至 - 我们的青春纪念册. 保留所有权利</p>
         </div>
     </footer>
     
@@ -728,6 +739,21 @@
 
     // 活动数据
     const activities = {
+        "0": {
+            title: "经典瞬间",
+            date: "2025年",
+            location: "地点不限",
+            participants: "全体参与",
+            bannerImage: "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145433.jpg?raw=true",
+            story: `<p>时间匆匆如流水 但总有些人 有些事 有些瞬间涌上心头的情绪值得你铭记</p>`,
+            galleryImages: [
+                "https://github.com/feibo123132/dazichuyou/blob/main/0%E7%BB%8F%E5%85%B8%E6%B0%B8%E6%B5%81%E4%BC%A0/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530144632.jpg?raw=true" alt="微信图片_20250530144632" width="300",
+                "https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                // 添加更多图片...
+            ]
+        },
+
+
         "1": {
             title: "小撮一顿",
             date: "2025年5月25日",
