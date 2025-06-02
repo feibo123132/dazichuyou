@@ -336,8 +336,8 @@
         <h1 class="hero-title">如约而至</h1>
         <p class="hero-title">乘兴而归</p>
         <p class="hero-description">
-            捕捉瞬间，珍藏友谊<br>
-            不仅是照片的展览馆，更是共同故事的纪念册<br>
+            捕捉瞬间 珍藏友谊<br>
+            不仅是照片的展览馆 更是共同故事的纪念册<br>
         </p>
         <button class="btn btn-primary">开始探索回忆</button>
         <div class="scroll-indicator">
@@ -349,7 +349,7 @@
 <section id="activities" class="section bg-gray-50">
     <div class="container">
         <h2 class="section-title">🤓最新活动记录😏</h2>
-        <p class="section-subtitle">记录我们一起走过的每一个美好瞬间🎉</p>
+        <p class="section-subtitle">记录我们一起走过的美好瞬间🎉</p>
         
         <div class="activities-grid">
             
@@ -1127,7 +1127,7 @@
                     <div class="card-bottom">
                         <h3 class="member-name">婷子姐</h3>
                         <div class="member-role">"歹毒"姐打球很飒</div>
-                        <p class="member-desc">想到要去打羽毛球 跑起来像是小学生放假</p>
+                        <p class="member-desc">去打球时 开心得像小学生放假</p>
                     </div>
                 </div>
 
@@ -1483,6 +1483,7 @@
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";    
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
   import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app-check.js"; // <--- 引入 App Check
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -1500,6 +1501,23 @@
 
   // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    // ----> 在这里或紧随其后放置 App Check 初始化代码 <----
+  try {
+    // !!! 重要: 将 'YOUR_RECAPTCHA_V3_SITE_KEY' 替换为您真实的 reCAPTCHA v3 站点密钥 !!!
+    if (process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost') {
+    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true; // 或者设置为您的调试令牌字符串
+    console.log("App Check debug token will be generated. Check console.");
+}
+
+    const appCheck = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider('6LfxQFIrAAAAACcLLwkazfDJtAl5QGP5pwsWlqLe'),
+      isTokenAutoRefreshEnabled: true
+    });
+    console.log("Firebase App Check initialized successfully.");
+  } catch (error) {
+    console.error("Error initializing Firebase App Check:", error);
+  }
+  // ----> App Check 初始化代码结束 <----
     const db = getFirestore(app);
     const auth = getAuth(app);
 
