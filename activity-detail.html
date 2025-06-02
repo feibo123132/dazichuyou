@@ -251,53 +251,7 @@
             object-fit: cover;
         }
         
-        .comments-section {
-            background: linear-gradient(135deg, #fff9f9 0%, #fff0f5 100%);
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-        
-        .comment-form {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-        
-        .form-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 25px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: #FFD700;
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
-        }
-        
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .btn {
+        .btn { /* Kept for potential other uses, though not used by comments anymore */
             display: inline-block;
             padding: 14px 30px;
             border-radius: 9999px;
@@ -309,82 +263,17 @@
             font-size: 1rem;
         }
         
-        .btn-primary {
+        .btn-primary { /* Kept for potential other uses */
             background-color: #FFD700;
             color: #2c3e50;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover { /* Kept for potential other uses */
             background-color: #ffcc00;
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(255, 204, 0, 0.4);
         }
-        
-        .comments-list {
-            display: grid;
-            gap: 25px;
-        }
-        
-        .comment-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .comment-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .comment-author {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .comment-date {
-            font-size: 0.9rem;
-            color: #718096;
-        }
-        
-        .comment-content {
-            font-size: 1.05rem;
-            color: #4a5568;
-            line-height: 1.7;
-            margin-bottom: 20px;
-        }
-        
-        .comment-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .comment-like {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #718096;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .comment-like:hover {
-            color: #f56565;
-        }
-        
-        .comment-like.active {
-            color: #f56565;
-        }
-        
+
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -447,8 +336,6 @@
     -moz-text-fill-color: transparent; /* 兼容 Firefox */
     /* 可选：添加微妙的白色或浅色阴影增加立体感 */
     text-shadow: 0px 1px 3px rgba(255, 255, 255, 0.1);
-    /* 可选：如果希望字体更现代活泼，可以考虑特殊的 WebFont，但当前字体栈已包含现代选择 */
-    /* font-family: 'Your Energetic Font', 'Inter', 'PingFang SC', sans-serif; */
         }
         
         .footer-description {
@@ -512,8 +399,7 @@
                 height: 300px;
             }
             
-            .story-section,
-            .comments-section {
+            .story-section { /* Removed .comments-section from here */
                 padding: 30px;
             }
             
@@ -556,7 +442,6 @@
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">如约而至</a>
@@ -573,15 +458,10 @@
                     <i class="fas fa-users"></i>
                     <span>人物志</span>
                 </a>
-                <a href="index.html#comments" class="nav-link">
-                    <i class="fas fa-comments"></i>
-                    <span>留言板</span>
-                </a>
-            </div>
+                </div>
         </div>
     </nav>
 
-    <!-- 活动详情内容 -->
     <div class="activity-detail">
         <a href="index.html" class="back-btn">
             <i class="fas fa-arrow-left"></i> 返回活动列表
@@ -644,75 +524,8 @@
             </div>
         </div>
         
-        <div class="comments-section">
-            <h2 class="section-title">朋友留言板</h2>
-            
-            <div class="comment-form">
-                <h3 class="form-title">留下你的回忆</h3>
-                <form id="comment-form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="你的昵称" id="comment-author" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" placeholder="分享你的感受和回忆..." id="comment-content" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">发表留言</button>
-                </form>
-            </div>
-            
-            <div class="comments-list" id="comments-list">
-                <div class="comment-card">
-                    <div class="comment-header">
-                        <div class="comment-author">小明</div>
-                        <div class="comment-date">2024年3月16日</div>
-                    </div>
-                    <div class="comment-content">
-                        那天真的太开心了！第一次见面就感觉像老朋友一样，期待下次聚会！
-                    </div>
-                    <div class="comment-actions">
-                        <div class="comment-like">
-                            <i class="fas fa-heart"></i>
-                            <span>8</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comment-card">
-                    <div class="comment-header">
-                        <div class="comment-author">小红</div>
-                        <div class="comment-date">2024年3月17日</div>
-                    </div>
-                    <div class="comment-content">
-                        樱花真的太美了，和大家一起度过的时光总是那么美好～下次我还要准备更多点心！
-                    </div>
-                    <div class="comment-actions">
-                        <div class="comment-like">
-                            <i class="fas fa-heart"></i>
-                            <span>12</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comment-card">
-                    <div class="comment-header">
-                        <div class="comment-author">小李</div>
-                        <div class="comment-date">2024年3月18日</div>
-                    </div>
-                    <div class="comment-content">
-                        感谢大家的参与！看到大家从陌生到熟悉的过程真的很感动，期待我们的下一次旅程！
-                    </div>
-                    <div class="comment-actions">
-                        <div class="comment-like">
-                            <i class="fas fa-heart"></i>
-                            <span>6</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
     
-    <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-logo">乘兴而归</div>
@@ -759,12 +572,8 @@
                 "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145349.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145433.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145359.jpg?raw=true",
-
-                // 添加更多图片...
             ]
         },
-
-
         "1": {
             title: "小撮一顿",
             date: "2025年5月25日",
@@ -776,7 +585,6 @@
                 "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145349.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145433.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0525%20%E5%B0%8F%E6%92%AE%E4%B8%80%E9%A1%BF/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530145359.jpg?raw=true",
-                // 添加更多图片...
             ]
         },
         "2": {
@@ -793,9 +601,6 @@
                 "https://github.com/feibo123132/dazichuyou/blob/main/0502%20%E5%9B%AD%E5%8D%9A%E5%9B%AD/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530144313.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0502%20%E5%9B%AD%E5%8D%9A%E5%9B%AD/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250602074045.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0502%20%E5%9B%AD%E5%8D%9A%E5%9B%AD/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530144316.jpg?raw=true",
-
-
-                // 添加图片...
             ]
         },
         "3": {
@@ -815,32 +620,28 @@
                 "https://github.com/feibo123132/dazichuyou/blob/main/0322%20%E9%9D%92%E7%A7%80%E5%B1%B1/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530143430.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0322%20%E9%9D%92%E7%A7%80%E5%B1%B1/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530143416.jpg?raw=true",
                 "https://github.com/feibo123132/dazichuyou/blob/main/0322%20%E9%9D%92%E7%A7%80%E5%B1%B1/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250530143426.jpg?raw=true",
-                // 添加图片...
             ]
         }
     };
     
     // 页面加载时更新内容
     document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM fully loaded and parsed."); // 日志1：确认脚本开始执行
+    console.log("DOM fully loaded and parsed."); 
 
     const activityId = getActivityId();
-    console.log("Retrieved activity ID:", activityId); // 日志2：查看获取到的 activityId
+    console.log("Retrieved activity ID:", activityId); 
 
     if (!activityId) {
         console.error("Activity ID is null or undefined. Cannot load activity.");
-        // 可以选择在这里显示一个错误消息给用户
-        // document.body.innerHTML = "<p>错误：无法加载活动，活动ID缺失。</p>";
         return;
     }
 
     const activity = activities[activityId];
-    console.log("Activity data for ID '" + activityId + "':", activity); // 日志3：查看找到的活动数据
+    console.log("Activity data for ID '" + activityId + "':", activity); 
 
     if (activity) {
-        console.log("Attempting to update page content for:", activity.title); // 日志4
+        console.log("Attempting to update page content for:", activity.title); 
 
-        // 更新标题
         const titleElement = document.querySelector('.activity-title');
         if (titleElement) {
             titleElement.textContent = activity.title;
@@ -849,7 +650,6 @@
             console.error("Element with class .activity-title not found!");
         }
 
-        // 更新元数据
         const metaItems = document.querySelectorAll('.meta-item');
         if (metaItems && metaItems.length >= 3) {
             if (metaItems[0] && metaItems[0].querySelector('span')) {
@@ -874,7 +674,6 @@
             console.error("Meta items (.meta-item) not found or less than 3. Found:", metaItems ? metaItems.length : 'null');
         }
 
-        // 更新横幅图片
         const bannerImg = document.querySelector('.activity-banner img');
         if (bannerImg) {
             bannerImg.src = activity.bannerImage;
@@ -884,19 +683,17 @@
             console.error("Element .activity-banner img not found!");
         }
 
-        // 更新故事内容
         const storyContent = document.querySelector('.story-content');
         if (storyContent) {
-            storyContent.innerHTML = activity.story; // 注意：使用 innerHTML，确保 story 内容中的 HTML 标签被正确渲染
+            storyContent.innerHTML = activity.story; 
             console.log("Story content updated.");
         } else {
             console.error("Element .story-content not found!");
         }
 
-        // 更新相册
         const gallery = document.querySelector('.photo-grid');
         if (gallery) {
-            gallery.innerHTML = ''; // 清空旧的相册内容
+            gallery.innerHTML = ''; 
             if (activity.galleryImages && Array.isArray(activity.galleryImages)) {
                 activity.galleryImages.forEach((imgSrc, index) => {
                     const photoItem = document.createElement('div');
@@ -907,17 +704,12 @@
                 console.log("Gallery updated with", activity.galleryImages.length, "images.");
             } else {
                 console.warn("No gallery images found for this activity or galleryImages is not an array.");
-                // 如果希望在没有图片时也显示提示，可以取消下面这行注释或修改它：
-                // gallery.innerHTML = "<p>当前活动没有图片可供展示。</p>";
             }
         } else {
             console.error("Element .photo-grid not found!");
         }
     } else {
         console.error("No activity data found for ID:", activityId, ". Displaying static content or error.");
-        // 可以选择在这里显示一个更友好的错误消息给用户，而不是默认的静态页面
-        // document.querySelector('.activity-title').textContent = "活动未找到";
-        // document.querySelector('.story-content').innerHTML = "<p>抱歉，无法加载您所选的活动详情。</p>";
     }
 });
 </script>
@@ -926,14 +718,12 @@
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  // Firestore imports related to comments are removed unless other parts of your app use them globally.
+  // For this specific request, assuming they were only for comments:
+  // import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
   import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-  import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app-check.js"; // <--- 引入 App Check
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app-check.js"; 
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyBcoiXwnT6CD-Zk0nvnbDfM7B0Fko5a0XE",
     authDomain: "wangye-dazi9527.firebaseapp.com",
@@ -944,12 +734,9 @@
     measurementId: "G-GDYHZQY4MJ"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
 
-  // ----> 在这里或紧随其后放置 App Check 初始化代码 <----
   try {
-    // !!! 重要: 将 'YOUR_RECAPTCHA_V3_SITE_KEY' 替换为您真实的 reCAPTCHA v3 站点密钥 !!!
     const appCheck = initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider('6LfxQFIrAAAAACcLLwkazfDJtAl5QGP5pwsWlqLe'),
       isTokenAutoRefreshEnabled: true
@@ -958,26 +745,22 @@
   } catch (error) {
     console.error("Error initializing Firebase App Check:", error);
   }
-  // ----> App Check 初始化代码结束 <----
 
   const analytics = getAnalytics(app);
-  // 你需要在这里添加 db 和 auth 的初始化：
-  const db = getFirestore(app);
+  // const db = getFirestore(app); // Only initialize if other parts of the page use Firestore
   const auth = getAuth(app);
-  // App ID for Firestore paths
-    const appId = 'wangye-dazi9527';
+  const appId = 'wangye-dazi9527'; // Kept if needed by other scripts, otherwise can be removed if only for comments
     
-    // DOM Elements for activity-detail.html comments section
-    const commentFormDetail = document.getElementById('comment-form'); // Assuming this ID is for the form in activity-detail.html
-    const commentsListDetail = document.getElementById('comments-list'); // Assuming this ID is for the list in activity-detail.html
+    // DOM Elements for comments section are removed
+    // const commentFormDetail = document.getElementById('comment-form'); 
+    // const commentsListDetail = document.getElementById('comments-list'); 
 
     let currentUserId = null;
-    let currentActivityId = null;
-    let activityCommentsCollectionRef = null;
+    // let currentActivityId = null; // Removed if only used for comments
+    // let activityCommentsCollectionRef = null; // Removed
 
-    // Function to handle custom modal alerts
+    // Function to handle custom modal alerts (kept as it's general purpose)
     function showModalAlert(message) {
-        // This is a placeholder. Implement a proper modal UI in your actual application.
         console.warn("Modal Alert:", message);
         const modal = document.createElement('div');
         modal.style.position = 'fixed';
@@ -996,7 +779,7 @@
         }, 3000);
     }
 
-    // Get activity ID from URL
+    // Get activity ID from URL (kept as it might be used by the dynamic content loading script)
     function getActivityIdFromURL() {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get('id');
@@ -1007,14 +790,15 @@
         if (user) {
             currentUserId = user.uid;
             console.log("User signed in anonymously (activity detail):", currentUserId);
-            currentActivityId = getActivityIdFromURL();
-            if (currentActivityId) {
-                activityCommentsCollectionRef = collection(db, `artifacts/${appId}/public/data/activity-comments/${currentActivityId}/comments`);
-                loadActivityComments();
-            } else {
-                console.error("Activity ID not found in URL.");
-                showModalAlert("无法加载此活动的留言，活动ID缺失。");
-            }
+            // currentActivityId = getActivityIdFromURL(); // Kept if other scripts need it
+            // Removed comment loading logic:
+            // if (currentActivityId) {
+            //     activityCommentsCollectionRef = collection(db, `artifacts/${appId}/public/data/activity-comments/${currentActivityId}/comments`);
+            //     loadActivityComments();
+            // } else {
+            //     console.error("Activity ID not found in URL.");
+            //     showModalAlert("无法加载此活动的留言，活动ID缺失。");
+            // }
         } else {
             console.log("User is signed out (activity detail). Attempting to sign in anonymously...");
             signInAnonymously(auth).catch((error) => {
@@ -1023,137 +807,10 @@
         }
     });
 
-
-    // Load comments for the specific activity
-    function loadActivityComments() {
-        if (!commentsListDetail) {
-            console.error("Comments list element 'comments-list' not found in activity-detail.html.");
-            return;
-        }
-        if (!currentUserId) {
-            console.warn("User not authenticated yet, activity comments will not load.");
-            return;
-        }
-        if (!activityCommentsCollectionRef) {
-            console.error("Activity comments collection reference is not set.");
-            return;
-        }
-
-        const q = query(activityCommentsCollectionRef, orderBy("timestamp", "desc"));
-
-        onSnapshot(q, (snapshot) => {
-            commentsListDetail.innerHTML = ''; // Clear existing comments
-            snapshot.forEach((doc) => {
-                const comment = doc.data();
-                renderActivityComment(doc.id, comment);
-            });
-        }, (error) => {
-            console.error("Error loading activity comments: ", error);
-            showModalAlert("加载活动留言失败，请稍后重试。");
-        });
-    }
-
-    // Render a single activity comment
-    function renderActivityComment(commentId, comment) {
-        if (!commentsListDetail) return;
-
-        const commentCard = document.createElement('div');
-        commentCard.className = 'comment-card'; // Use existing class from activity-detail.html
-        commentCard.dataset.id = commentId;
-
-        // Use the existing HTML structure for comment cards in activity-detail.html
-        const authorName = comment.author || "匿名用户";
-        const contentText = comment.content || "";
-        const timestamp = comment.timestamp?.toDate ? comment.timestamp.toDate().toLocaleDateString('zh-CN') : new Date().toLocaleDateString('zh-CN');
-        const likes = comment.likes || 0;
-
-        commentCard.innerHTML = `
-            <div class="comment-header">
-                <div class="comment-author">${authorName}</div>
-                <div class="comment-date">${timestamp}</div>
-            </div>
-            <div class="comment-content">
-                ${contentText.replace(/\n/g, '<br>')}
-            </div>
-            <div class="comment-actions">
-                <div class="comment-like" data-comment-id="${commentId}">
-                    <i class="fas fa-heart"></i>
-                    <span>${likes}</span>
-                </div>
-            </div>
-        `;
-        commentsListDetail.appendChild(commentCard);
-
-        const likeBtn = commentCard.querySelector('.comment-like');
-        if (likeBtn) {
-            likeBtn.addEventListener('click', () => handleActivityLike(commentId));
-        }
-    }
-
-    // Handle activity comment submission
-    if (commentFormDetail) {
-        commentFormDetail.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!currentUserId) {
-                showModalAlert("请先登录才能发表留言。");
-                return;
-            }
-            if (!activityCommentsCollectionRef) {
-                showModalAlert("无法发表留言，活动信息不明确。");
-                return;
-            }
-
-            const authorInput = document.getElementById('comment-author'); // Assuming same ID as index.html
-            const contentInput = document.getElementById('comment-content'); // Assuming same ID as index.html
-            
-            if (!authorInput || !contentInput) {
-                console.error("Author or content input not found in activity-detail.html form.");
-                return;
-            }
-
-            const author = authorInput.value.trim();
-            const content = contentInput.value.trim();
-
-            if (author && content) {
-                try {
-                    await addDoc(activityCommentsCollectionRef, {
-                        author: author,
-                        content: content,
-                        likes: 0,
-                        timestamp: serverTimestamp(),
-                        userId: currentUserId
-                    });
-                    commentFormDetail.reset();
-                } catch (error) {
-                    console.error("Error adding activity comment: ", error);
-                    showModalAlert("发表活动留言失败，请稍后重试。");
-                }
-            } else {
-                showModalAlert("昵称和内容不能为空！");
-            }
-        });
-    } else {
-        console.warn("Comment form with ID 'comment-form' not found in activity-detail.html.");
-    }
-
-    // Handle activity like button click
-    async function handleActivityLike(commentId) {
-        if (!currentUserId) {
-            showModalAlert("请先登录才能点赞。");
-            return;
-        }
-        if (!commentId || !currentActivityId) return;
-
-        const commentRef = doc(db, `artifacts/${appId}/public/data/activity-comments/${currentActivityId}/comments`, commentId);
-        try {
-            await updateDoc(commentRef, {
-                likes: increment(1)
-            });
-        } catch (error) {
-            console.error("Error liking activity comment: ", error);
-            showModalAlert("点赞失败，请稍后重试。");
-        }
-    }
+    // Removed loadActivityComments function
+    // Removed renderActivityComment function
+    // Removed commentFormDetail event listener
+    // Removed handleActivityLike function
     
     // Initial call to attempt sign-in if no user is immediately available
     if (!auth.currentUser) {
@@ -1161,8 +818,6 @@
             console.error("Initial anonymous sign-in attempt failed (activity detail):", error);
         });
     }
-
-
 </script>
 
 </body>
